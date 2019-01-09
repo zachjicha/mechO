@@ -1,0 +1,3 @@
+/home/zjicha/Projects/mechO/CMakeFiles/rebuild_cache.dir
+/home/zjicha/Projects/mechO/CMakeFiles/mechO.dir
+/home/zjicha/Projects/mechO/CMakeFiles/edit_cache.dir

@@ -1,0 +1,1 @@
+/usr/bin/cc    CMakeFiles/mechO.dir/src/mechO.c.o CMakeFiles/mechO.dir/src/queue.c.o  -o mechO 

@@ -1,0 +1,26 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/zjicha/Projects/mechO/src/mechO.c
+stdlib.h
+-
+stdio.h
+-
+queue.h
+/home/zjicha/Projects/mechO/src/queue.h
+
+/home/zjicha/Projects/mechO/src/queue.c
+stdlib.h
+-
+stdio.h
+-
+queue.h
+/home/zjicha/Projects/mechO/src/queue.h
+
+include/queue.h
+
