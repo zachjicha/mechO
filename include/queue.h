@@ -1,30 +1,30 @@
 #ifndef QUEUE
 #define QUEUE
 
-typedef struct node_type {
+typedef struct event_type {
 
-    struct node_type* next;
+    struct event_type* next;
     int type;
     int time;
     int data;
 
-} Node;
+} Event;
 
 typedef struct {
 
-    Node* front;
-    Node* end;
+    Event* front;
+    Event* end;
     int size;
 
 } Queue;
 
-Node* node_event(int type, int dtime, int data, Node* next);
+Event* make_event(int type, int dtime, int data, Event* next);
 Queue* make_queue();
 
-void free_node(Node* node);
+void free_event(Event* event);
 void free_queue(Queue* queue);
 
 void enqueue(Queue* queue, int type, int dtime, int data);
-void* dequeue(Queue* queue);
+Event* dequeue(Queue* queue);
 
 #endif

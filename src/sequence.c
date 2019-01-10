@@ -2,8 +2,9 @@
 #include <stdio.h>
 #include "list.h"
 #include "queue.h"
+#include "sequence.h"
 
-void make_sequence() {
+Sequence* make_sequence() {
 
     Sequence* sequence = calloc(1, sizeof(Sequence));
     sequence->numtracks = 0;

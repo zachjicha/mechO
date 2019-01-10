@@ -1,17 +1,17 @@
 #ifndef SEQUENCE
 #define SEQUENCE
 
-typedef {
+typedef struct {
 
     int numtracks;
     List* tracks;
 
 } Sequence;
 
-void make_sequence();
+Sequence* make_sequence();
 
 void readMidi(unsigned char* bytes);
-Event* getNextEvent(int track);
+Event* getNextEvent(Sequence* sequence, int tracknum);
 
 void free_sequence(Sequence* sequence);
 

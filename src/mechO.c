@@ -39,9 +39,9 @@ int main(int argc, char* argv[]) {
     enqueue(q, 3, 1, 0);
 
     for(int i = 0; i < 3; i++) {
-        Node* e = dequeue(q);
+        Event* e = dequeue(q);
         printf("T:%d T:%d D:%d\n", e->type, e->time, e->data);
-        free_node(e);
+        free_event(e);
     }
 
     free_queue(q);

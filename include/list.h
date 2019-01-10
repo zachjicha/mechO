@@ -1,28 +1,30 @@
 #ifndef LIST
 #define LIST
 
-typedef link_type {
+#include "queue.h"
 
-    struct link_type* next;
+typedef struct node_type {
+
+    struct node_type* next;
     Queue* data;
 
-} Link;
+} Node;
 
-typedef {
+typedef struct {
 
-    Link* head;
-    Link* tail;
+    Node* head;
+    Node* tail;
     int size;
 
 } List;
 
 List* make_list();
-Node* make_link(Queue* data, Link* next);
+Node* make_node(Queue* data, Node* next);
 
 Queue* get(List* list, int index);
 void append(List* list, Queue* data);
 
-void free_link(Link* link);
+void free_node(Node* node);
 void free_list(List* list);
 
 

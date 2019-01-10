@@ -2,14 +2,14 @@
 #include <stdio.h>
 #include "queue.h"
 
-Event* make_node(int type, int dtime, int data, Node* next) {
+Event* make_event(int type, int dtime, int data, Event* next) {
 
-    Node* node = calloc(1, sizeof(Node));
-    node->type = type;
-    node->time = dtime;
-    node->data = data;
-    node->next = next;
-    return node;
+    Event* event = calloc(1, sizeof(Event));
+    event->type = type;
+    event->time = dtime;
+    event->data = data;
+    event->next = next;
+    return event;
 }
 
 Queue* make_queue() {
@@ -22,17 +22,17 @@ Queue* make_queue() {
 
 }
 
-void free_node(Node* node) {
-    free(node);
+void free_event(Event* event) {
+    free(event);
 }
 
 void free_queue(Queue* queue) {
-    Node* current = queue->front;
+    Event* current = queue->front;
 
     while(current != NULL) {
-        Node* next = current->next;
+        Event* next = current->next;
 
-        free_node(current);
+        free_event(current);
         current = next;
     }
     free(queue);
@@ -40,28 +40,28 @@ void free_queue(Queue* queue) {
 
 void enqueue(Queue* queue, int type, int dtime, int data) {
 
-    Node* node = make_node(type, dtime, data, NULL);
+    Event* event = make_event(type, dtime, data, NULL);
 
     if(queue->size == 0) {
-        queue->front = node;
-        queue->end = node;
+        queue->front = event;
+        queue->end = event;
     }
     else {
-        queue->end->next = node;
-        queue->end = node;
+        queue->end->next = event;
+        queue->end = queue->end->next;
     }
 
     queue->size++;
     return;
 }
 
-void* dequeue(Queue* queue) {
+Event* dequeue(Queue* queue) {
 
     if(queue->size == 0) {
         return NULL;
     }
 
-    Node* toReturn = queue->front;
+    Event* toReturn = queue->front;
     queue->front = queue->front->next;
 
     if(queue->size == 1) {

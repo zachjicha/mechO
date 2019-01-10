@@ -12,18 +12,18 @@ List* make_list() {
 
 }
 
-Node* make_link(Queue* data, Link* next) {
+Node* make_node(Queue* data, Node* next) {
 
-    Link* link = calloc(1, sizeof(Link));
-    node->next = next:
-    node->data = data:
-    return link;
+    Node* node = calloc(1, sizeof(Node));
+    node->next = next;
+    node->data = data;
+    return node;
 
 }
 
 Queue* get(List* list, int index) {
 
-    Link* current = list->head;
+    Node* current = list->head;
 
     for(int i = 0; i < index; i++) {
         current = current->next;
@@ -35,35 +35,35 @@ Queue* get(List* list, int index) {
 
 void append(List* list, Queue* data) {
 
-    Link* link = make_link(data, NULL);
+    Node* node = make_node(data, NULL);
 
 
     if(list->size == 0) {
-        list->head = link;
-        list->tail = link;
+        list->head = node;
+        list->tail = node;
     }
     else {
-        list->tail->next = link;
+        list->tail->next = node;
         list->tail = list->tail->next;
     }
 
 }
 
-void free_link(Link* link) {
+void free_node(Node* node) {
 
-    free_queue(link->data);
-    free(link);
+    free_queue(node->data);
+    free(node);
 
 }
 
 void free_list(List* list) {
 
-    Link* current = list->head;
+    Node* current = list->head;
 
     for(int i = 0; i < list->size; i++) {
-        Link* next = current->next;
+        Node* next = current->next;
 
-        free_link(current);
+        free_node(current);
 
         current = next;
     }
