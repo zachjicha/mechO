@@ -39,13 +39,16 @@ int main(int argc, char* argv[]) {
     enqueue(q, 3, 1, 0);
 
     for(int i = 0; i < 3; i++) {
-        Event* e = dequeue(q);
+        Node* e = dequeue(q);
         printf("T:%d T:%d D:%d\n", e->type, e->time, e->data);
-        free_event(e);
+        free_node(e);
     }
 
     free_queue(q);
 
+
+
+    free(bytes);
     return 0;
 }
 
