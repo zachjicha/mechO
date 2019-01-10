@@ -7,6 +7,7 @@ List* make_list() {
 
     List* list = calloc(1, sizeof(List));
     list->head = NULL;
+    list->tail = NULL;
     list->size = 0;
     return list;
 
@@ -46,6 +47,8 @@ void append(List* list, Queue* data) {
         list->tail->next = node;
         list->tail = list->tail->next;
     }
+
+    list->size++;
 
 }
 
