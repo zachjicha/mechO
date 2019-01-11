@@ -1,6 +1,9 @@
 #ifndef SEQUENCE
 #define SEQUENCE
 
+#include "list.h"
+#include "queue.h"
+
 typedef struct {
 
     int numtracks;

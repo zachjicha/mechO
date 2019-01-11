@@ -1,7 +1,10 @@
+#include "parser.h"
 #include "queue.h"
 #include "list.h"
 #include "pitchvals.h"
 #include "sequence.h"
+#include <stdbool.h>
+#include <stdlib.h>
 
 //Most if not all of the following code is taken from Stepper-Music ConvertMidi.java
 
@@ -95,7 +98,6 @@ void populateSequence(Sequence* sequence, unsigned char* bytes) {
         if(bytes[trackStartIndex] != 0x4D || bytes[trackStartIndex+1] != 0x54 || bytes[trackStartIndex+2] != 0x72 || bytes[trackStartIndex+3] != 0x6B) {
             //If not, continue
             i--;
-            System.out.println("Found a non-track chunk, continuing...");
             trackStartIndex += 8 + byteArrayToUnsignedInt(bytes, trackStartIndex+4, trackStartIndex+7);
             continue;
         }
@@ -125,7 +127,7 @@ void populateSequence(Sequence* sequence, unsigned char* bytes) {
             int eventData = 0;
             
             //Set the members of the event
-            VariableLengthValue* deltaRead = readVariableLength(bytes, pairStartIndex);
+            VariableLengthValue* deltaRead = readVariableLengthValue(bytes, pairStartIndex);
             eventTime = deltaRead->value;
 
             //eventStartIndex is the index of the first byte of the event in the current delta time/event pair
@@ -147,7 +149,7 @@ void populateSequence(Sequence* sequence, unsigned char* bytes) {
                 //Check the type of meta event
                 if(type < 0x21 || type == 0x7F || type == 0x54 || type == 0x58 || type == 0x59) {
                     //This is for events we dont care about
-                    VariableLengthValue* variableLengthRead = readVariableLength(bytes, eventStartIndex + 2);
+                    VariableLengthValue* variableLengthRead = readVariableLengthValue(bytes, eventStartIndex + 2);
                     //The index of ther next event pair is the sum of (in order of adding):
                     //Length of the event data
                     //Length of the Length (how many bytes were used to store the length)
@@ -180,13 +182,13 @@ void populateSequence(Sequence* sequence, unsigned char* bytes) {
             //This case is for system exclusive events, irrelevant
             else if(bytes[eventStartIndex] == 0xF0 || bytes[eventStartIndex] == 0xF7) {
                 //Record the length of the dt/event pair
-                VariableLengthValue* variableLengthRead = readVariableLength(bytes, eventStartIndex + 2);
+                VariableLengthValue* variableLengthRead = readVariableLengthValue(bytes, eventStartIndex + 2);
                 //The index of ther next event pair is the sum of (in order of adding):
                 //Length of the event data
                 //Length of the Length (how many bytes were used to store the length)
                 //The current eventStartIndex
                 //1 (for the byte that marks the event as SYSEX)
-                nextPairStartIndex = variableLengthRead[0] + variableLengthRead[1] + eventStartIndex + 1;
+                nextPairStartIndex = variableLengthRead->value + variableLengthRead->numbytes + eventStartIndex + 1;
                 free_variablelengthvalue(variableLengthRead);
                 //Skip the rest of this loop
                 continue;
@@ -240,7 +242,7 @@ void populateSequence(Sequence* sequence, unsigned char* bytes) {
                             }
                             else {
                                 //TODO PUT SPACE BETWEEN NOTES HERE
-                                eventData = pitchVals[pitchIndex];
+                                eventData = getPitchVal(pitchIndex);
                                 eventType = 1;
                             }
                         //Record the length of the dt/event pair

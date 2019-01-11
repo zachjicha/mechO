@@ -1,12 +1,13 @@
 #ifndef PARSER
 #define PARSER
 
+#include <stdbool.h>
 #include "sequence.h"
 
 typedef struct {
 
     int numbytes;
-    int val;
+    int value;
 
 } VariableLengthValue;
 

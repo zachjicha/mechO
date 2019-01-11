@@ -2,7 +2,7 @@
 #define PITCHVALS
 
 
-int getPitchVals(int index);
+int getPitchVal(int index);
 
 
 #endif
