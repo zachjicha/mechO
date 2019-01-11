@@ -13,8 +13,6 @@ Sequence* make_sequence() {
 
 }
 
-void readMidi(unsigned char* bytes);
-
 Event* getNextEvent(Sequence* sequence, int tracknum) {
 
     Queue* track = get(sequence->tracks, tracknum);

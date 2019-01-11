@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include "queue.h"
 #include "list.h"
+#include "sequence.h"
+#include "parser.h"
 
 //https://stackoverflow.com/questions/22059189/read-a-file-as-byte-array
 //Thanks SO for how to read file into a byte array
@@ -34,37 +36,12 @@ int main(int argc, char* argv[]) {
 
     //The array bytes now contains all of the bytes from the midi file, so we can interpret it now
     
+    Sequence* sequence = make_sequence();
 
-    Queue* q = make_queue();
-    enqueue(q, 1, 0, 3000);
-    enqueue(q, 0, 500, 3000);
-    enqueue(q, 3, 1, 0);
+    populateSequence(sequence, bytes);
 
-    Queue* e = make_queue();
-    enqueue(e, 1, 0, 3000);
-    enqueue(e, 0, 500, 3000);
-    enqueue(e, 3, 1, 0);
+    free_sequence(sequence);
 
-    Queue* d = make_queue();
-    enqueue(d, 1, 0, 3000);
-    enqueue(d, 0, 500, 3000);
-    enqueue(d, 3, 1, 0);
-
-    List* l = make_list();
-    append(l, q);
-    append(l, e);
-    append(l, d);
-
-    for(int j = 0; j < 3; j++) {
-        Queue* qu = get(l, j);
-        for(int i = 0; i < 3; i++) {
-            Event* e = dequeue(qu);
-            printf("T:%d T:%d D:%d\n", e->type, e->time, e->data);
-            free_event(e);
-        }
-    }
-
-    free_list(l);
 
 
 
