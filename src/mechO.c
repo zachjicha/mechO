@@ -42,9 +42,6 @@ int main(int argc, char* argv[]) {
 
     free_sequence(sequence);
 
-
-
-
     free(bytes);
     return 0;
 }

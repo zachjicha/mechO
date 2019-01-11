@@ -3,8 +3,8 @@
 #include "list.h"
 #include "pitchvals.h"
 #include "sequence.h"
-#include <stdbool.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 //Most if not all of the following code is taken from Stepper-Music ConvertMidi.java
 
@@ -64,15 +64,6 @@ VariableLengthValue* readVariableLengthValue(unsigned char* bytes, int first) {
     return v;
 }
 
-int runningStatusCheck(bool b) {
-    if(b) {
-        return 1;
-    }
-    else {
-        return 0;
-    }
-}
-
 //Strap in, this takes a while
 void populateSequence(Sequence* sequence, unsigned char* bytes) {
 
@@ -89,7 +80,7 @@ void populateSequence(Sequence* sequence, unsigned char* bytes) {
     unsigned char status = 0;
 
     //Boolean to track whether we are in running status or not
-    bool isRunningStatus = false;
+    int isRunningStatus = 0;
 
     //Loop through each track
     for(int i = 0; i < tracks; i++) {
@@ -105,6 +96,7 @@ void populateSequence(Sequence* sequence, unsigned char* bytes) {
         //Make a queue that represents the current track
         Queue* currentTrack = make_queue();
         append(sequence->tracks, currentTrack);
+        sequence->numtracks++;
 
         //Length of the data of the chunk
         int chunkLength = byteArrayToUnsignedInt(bytes, trackStartIndex+4, trackStartIndex+7);
@@ -120,6 +112,8 @@ void populateSequence(Sequence* sequence, unsigned char* bytes) {
         //this is since the start of the chunk is s, the header is 8 bytes and the rest is chunkLength bytes
         //Loop through each dt/event pair
         while(pairStartIndex < chunkLength + trackStartIndex + 8) {
+
+            //printf("%d\n", pairStartIndex);
 
             //Here are the members of the event we will create
             int eventType = 0;
@@ -141,26 +135,14 @@ void populateSequence(Sequence* sequence, unsigned char* bytes) {
 
             //If this condition is true, then it is a meta event
             if(bytes[eventStartIndex] == 0xFF) {
+                isRunningStatus = 0;
 
                 //This byte holds the type of meta event
                 //It is analogous to status
                 unsigned char type = bytes[eventStartIndex + 1];
 
                 //Check the type of meta event
-                if(type < 0x21 || type == 0x7F || type == 0x54 || type == 0x58 || type == 0x59) {
-                    //This is for events we dont care about
-                    VariableLengthValue* variableLengthRead = readVariableLengthValue(bytes, eventStartIndex + 2);
-                    //The index of ther next event pair is the sum of (in order of adding):
-                    //Length of the event data
-                    //Length of the Length (how many bytes were used to store the length)
-                    //The current eventStartIndex
-                    //2 (1 is for the byte that marks the event as meta, 1 for the type of meta event)
-                    nextPairStartIndex = variableLengthRead->value + variableLengthRead->numbytes + eventStartIndex + 2;
-                    free_variablelengthvalue(variableLengthRead);
-                    //Skip the rest of this loop
-                    continue;
-                }
-                else if(type == 0x2F) {
+                if(type == 0x2F) {
                     //This is an EOT event
                     eventData = 0;
                     eventType = 3;
@@ -177,10 +159,25 @@ void populateSequence(Sequence* sequence, unsigned char* bytes) {
                     //Tempo event is always 6 long
                     nextPairStartIndex = 6 + eventStartIndex;
                 }
+                else {
+                    //This is for events we dont care about
+                    VariableLengthValue* variableLengthRead = readVariableLengthValue(bytes, eventStartIndex + 2);
+                    //The index of ther next event pair is the sum of (in order of adding):
+                    //Length of the event data
+                    //Length of the Length (how many bytes were used to store the length)
+                    //The current eventStartIndex
+                    //2 (1 is for the byte that marks the event as meta, 1 for the type of meta event)
+                    nextPairStartIndex = variableLengthRead->value + variableLengthRead->numbytes + eventStartIndex + 2;
+                    free_variablelengthvalue(variableLengthRead);
+                    //Skip the rest of this loop
+                    pairStartIndex = nextPairStartIndex;
+                    continue;
+                }
             }
 
             //This case is for system exclusive events, irrelevant
             else if(bytes[eventStartIndex] == 0xF0 || bytes[eventStartIndex] == 0xF7) {
+                isRunningStatus = 0;
                 //Record the length of the dt/event pair
                 VariableLengthValue* variableLengthRead = readVariableLengthValue(bytes, eventStartIndex + 2);
                 //The index of ther next event pair is the sum of (in order of adding):
@@ -191,6 +188,7 @@ void populateSequence(Sequence* sequence, unsigned char* bytes) {
                 nextPairStartIndex = variableLengthRead->value + variableLengthRead->numbytes + eventStartIndex + 1;
                 free_variablelengthvalue(variableLengthRead);
                 //Skip the rest of this loop
+                pairStartIndex = nextPairStartIndex;
                 continue;
             }
 
@@ -201,8 +199,12 @@ void populateSequence(Sequence* sequence, unsigned char* bytes) {
                 if(bytes[eventStartIndex] > 0x7F) {
                     //If bytes[k] is greater than 0x7F, then it is a new status, so we record it
                     status = bytes[eventStartIndex];
-                    isRunningStatus = false;
+                    isRunningStatus = 0;
                 }
+
+                printf("Status: %X \n", status);
+                printf("Index: %d \n", eventStartIndex);
+                printf("RS: %d \n", isRunningStatus);
 
                 //If we skipped the prior if statement, then we are in running status, so keep using the previous status
 
@@ -212,8 +214,9 @@ void populateSequence(Sequence* sequence, unsigned char* bytes) {
                     //If we are here, then this is either a Channel Mode Message or Controller Change message
                     //None of these events are relevant
                     //All events in this grouping have a length of 3
-                    nextPairStartIndex = 3 + eventStartIndex;
-                    isRunningStatus = true;
+                    nextPairStartIndex = 3 + eventStartIndex - isRunningStatus;
+                    isRunningStatus = 1;
+                    pairStartIndex = nextPairStartIndex;
                     continue;
                 }
 
@@ -227,14 +230,14 @@ void populateSequence(Sequence* sequence, unsigned char* bytes) {
                         eventData = 0;
                         eventType = 0;
                         //Record the length of the dt/event pair
-                        nextPairStartIndex = 3 + eventStartIndex - runningStatusCheck(isRunningStatus);
-                        isRunningStatus = true;
+                        nextPairStartIndex = 3 + eventStartIndex - isRunningStatus;
+                        isRunningStatus = 1;
                     }
                     else if((status & 0xF0) == 0x90) {
                         //Note on message
-                        int pitchIndex = bytes[eventStartIndex + 1 - runningStatusCheck(isRunningStatus)];
+                        int pitchIndex = bytes[eventStartIndex + 1 - isRunningStatus];
 
-                        int velocity = bytes[eventStartIndex + 2 - runningStatusCheck(isRunningStatus)];
+                        int velocity = bytes[eventStartIndex + 2 - isRunningStatus];
                             if(velocity == 0) {
                                 //Velocity of zero is really a note off event to sustain running status
                                 eventData = 0;
@@ -246,27 +249,30 @@ void populateSequence(Sequence* sequence, unsigned char* bytes) {
                                 eventType = 1;
                             }
                         //Record the length of the dt/event pair
-                        nextPairStartIndex = 3 + eventStartIndex - runningStatusCheck(isRunningStatus);
-                        isRunningStatus = true;
+                        nextPairStartIndex = 3 + eventStartIndex - isRunningStatus;
+                        isRunningStatus = 1;
                     }
                     else if((status & 0xF0) == 0xA0) {
                         //Polyphonic pressure
                         nextPairStartIndex = 3 + eventStartIndex;
-                        isRunningStatus = true;
+                        isRunningStatus = 1;
+                        pairStartIndex = nextPairStartIndex;
                         continue;
                     }
                     else if((status & 0xF0) == 0xC0) {
                         //Program Change
                         //Record the length of the dt/event pair
                         nextPairStartIndex = 2 + eventStartIndex;
-                        isRunningStatus = true;
+                        isRunningStatus = 1;
+                        pairStartIndex = nextPairStartIndex;
                         continue;
                     }
                     else if((status & 0xF0) == 0xD0) {
                         //Channel Key Pressure
                         //Record the length of the dt/event pair
                         nextPairStartIndex = 2 + eventStartIndex;
-                        isRunningStatus = true;
+                        isRunningStatus = 1;
+                        pairStartIndex = nextPairStartIndex;
                         continue;
                     }
                     else if((status & 0xF0) == 0xE0) {
@@ -274,7 +280,8 @@ void populateSequence(Sequence* sequence, unsigned char* bytes) {
                         //TODO This one might actually be useful at some time
                         //Record the length of the dt/event pair
                         nextPairStartIndex = 3 + eventStartIndex;
-                        isRunningStatus = true;
+                        isRunningStatus = 1;
+                        pairStartIndex = nextPairStartIndex;
                         continue;
                     }
                 }
@@ -284,6 +291,7 @@ void populateSequence(Sequence* sequence, unsigned char* bytes) {
             //Now if we are here that means we got one of the handful of relevant events
             //So we can add it to our track
             enqueue(currentTrack, eventType, eventTime, eventData);
+            pairStartIndex = nextPairStartIndex;
         }
     }
 }

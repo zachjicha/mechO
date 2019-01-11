@@ -23,13 +23,7 @@ Event* getNextEvent(Sequence* sequence, int tracknum) {
 
 void free_sequence(Sequence* sequence) {
 
-    Queue* current;
-
-    for(int i = 0; i < sequence->numtracks; i++) {
-        current = get(sequence->tracks, i);
-        free_queue(current);
-    }
-
+    free_list(sequence->tracks);
     free(sequence);
 
 }
