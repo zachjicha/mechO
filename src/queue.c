@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include "queue.h"
 
-Event* make_event(int type, int dtime, int data, Event* next) {
+Event* make_event(int type, int dtime, long data, Event* next) {
 
     Event* event = calloc(1, sizeof(Event));
     event->type = type;
@@ -23,7 +23,13 @@ Queue* make_queue() {
 }
 
 void free_event(Event* event) {
-    free(event);
+
+    if(event != NULL) {
+        free(event);
+    }
+
+    event = NULL;
+    
 }
 
 void free_queue(Queue* queue) {
@@ -35,10 +41,16 @@ void free_queue(Queue* queue) {
         free_event(current);
         current = next;
     }
-    free(queue);
+
+    if(queue != NULL) {
+        free(queue);
+    }
+
+    queue = NULL;
+    
 }
 
-void enqueue(Queue* queue, int type, int dtime, int data) {
+void enqueue(Queue* queue, int type, int dtime, long data) {
 
     Event* event = make_event(type, dtime, data, NULL);
 
@@ -71,4 +83,15 @@ Event* dequeue(Queue* queue) {
     queue->size--;
 
     return toReturn;
+}
+
+void printQueue(Queue* queue) {
+
+    Event* current = queue->front;
+
+    while(current != NULL) {
+        printf("Type: %d  Time: %d  Data: %d\n", current->type, current->time, current->data);
+        current = current->next;
+    }
+
 }

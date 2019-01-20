@@ -14,7 +14,8 @@ typedef struct {
 
 Sequence* make_sequence();
 
-Event* getNextEvent(Sequence* sequence, int tracknum);
+Queue* getTrack(Sequence* sequence, int track);
+void printSequence(Sequence* sequence);
 
 void free_sequence(Sequence* sequence);
 

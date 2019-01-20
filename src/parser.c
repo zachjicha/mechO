@@ -19,8 +19,11 @@ VariableLengthValue* make_variablelengthvalue() {
 
 void free_variablelengthvalue(VariableLengthValue* v) {
 
-    free(v);
+    if(v != NULL) {
+        free(v);
+    }
 
+    v = NULL;
 }
 
 int byteArrayToUnsignedInt(unsigned char* bytes, int first, int last) {
@@ -70,7 +73,7 @@ void populateSequence(Sequence* sequence, unsigned char* bytes) {
     //Get the number of tracks
     int tracks = byteArrayToUnsignedInt(bytes, 10, 11);
     //Get the pulses per quarter note
-    int clocks = byteArrayToUnsignedInt(bytes, 12, 13);
+    sequence->clocks = byteArrayToUnsignedInt(bytes, 12, 13);
 
     //Variable that tracks the index of the first byte of the current track
     //Starts at 14 since the header chunk is always 14 bytes long
@@ -97,6 +100,7 @@ void populateSequence(Sequence* sequence, unsigned char* bytes) {
         Queue* currentTrack = make_queue();
         append(sequence->tracks, currentTrack);
         sequence->numtracks++;
+        enqueue(currentTrack, 0, 0, 0);
 
         //Length of the data of the chunk
         int chunkLength = byteArrayToUnsignedInt(bytes, trackStartIndex+4, trackStartIndex+7);
@@ -108,9 +112,13 @@ void populateSequence(Sequence* sequence, unsigned char* bytes) {
         //it starts at the first byte of the data
         int pairStartIndex = trackStartIndex + 8;
 
+        //Index of the next event pair
+        int nextPairStartIndex = 0;
+
         //chunkLength + trackStartIndex + 8 is the first byte of the next chunk
         //this is since the start of the chunk is s, the header is 8 bytes and the rest is chunkLength bytes
         //Loop through each dt/event pair
+
         while(pairStartIndex < chunkLength + trackStartIndex + 8) {
 
             //printf("%d\n", pairStartIndex);
@@ -118,7 +126,7 @@ void populateSequence(Sequence* sequence, unsigned char* bytes) {
             //Here are the members of the event we will create
             int eventType = 0;
             int eventTime = 0;
-            int eventData = 0;
+            long eventData = 0;
             
             //Set the members of the event
             VariableLengthValue* deltaRead = readVariableLengthValue(bytes, pairStartIndex);
@@ -130,8 +138,7 @@ void populateSequence(Sequence* sequence, unsigned char* bytes) {
             //We are done with delta read
             free_variablelengthvalue(deltaRead);
 
-            //Index of the next event pair
-            int nextPairStartIndex = 0;
+            
 
             //If this condition is true, then it is a meta event
             if(bytes[eventStartIndex] == 0xFF) {
@@ -152,7 +159,8 @@ void populateSequence(Sequence* sequence, unsigned char* bytes) {
                 }
                 else if(type == 0x51) {
                     //this is a tempo meta event
-                    int tempo = byteArrayToUnsignedInt(bytes, eventStartIndex+2, eventStartIndex+4);
+                    int tempo = byteArrayToUnsignedInt(bytes, eventStartIndex+3, eventStartIndex+5);
+                    //int tempo = 500000;
                     eventData = tempo;
                     eventType = 2;
                     //Record the length of the dt/event pair
@@ -201,10 +209,6 @@ void populateSequence(Sequence* sequence, unsigned char* bytes) {
                     status = bytes[eventStartIndex];
                     isRunningStatus = 0;
                 }
-
-                printf("Status: %X \n", status);
-                printf("Index: %d \n", eventStartIndex);
-                printf("RS: %d \n", isRunningStatus);
 
                 //If we skipped the prior if statement, then we are in running status, so keep using the previous status
 
@@ -291,7 +295,13 @@ void populateSequence(Sequence* sequence, unsigned char* bytes) {
             //Now if we are here that means we got one of the handful of relevant events
             //So we can add it to our track
             enqueue(currentTrack, eventType, eventTime, eventData);
+            if(eventType == 2) {
+            //    enqueue(currentTrack, 0, 0, 0);
+            }
             pairStartIndex = nextPairStartIndex;
         }
+        printQueue(currentTrack);
+        printf("\n");
+        trackStartIndex = nextPairStartIndex;
     }
 }

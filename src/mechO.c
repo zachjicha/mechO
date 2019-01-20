@@ -4,6 +4,16 @@
 #include "list.h"
 #include "sequence.h"
 #include "parser.h"
+#include "wiringPi.h"
+#include "stepper.h"
+#include <sys/time.h>
+
+//Curtesy of https://gist.github.com/sevko/d23646ba07c77c15fde9
+long getMicrotime(){
+	struct timeval currentTime;
+	gettimeofday(&currentTime, NULL);
+	return currentTime.tv_sec * (int)1e6 + currentTime.tv_usec;
+}
 
 //https://stackoverflow.com/questions/22059189/read-a-file-as-byte-array
 //Thanks SO for how to read file into a byte array
@@ -14,6 +24,8 @@ int main(int argc, char* argv[]) {
         printf("PLEASE INPUT FILENAME\n");
         return 1;
     }
+
+    wiringPiSetup();
 
     FILE* file;
     unsigned char* bytes;
@@ -40,10 +52,44 @@ int main(int argc, char* argv[]) {
 
     populateSequence(sequence, bytes);
 
+    Stepper* s0 = make_stepper(16, 15, getTrack(sequence, 0));
+    Stepper* s1 = make_stepper(4, 1, getTrack(sequence, 1));
+
+    long startTime = getMicrotime();
+
+    stepperInitTimes(s0, startTime);
+    stepperInitTimes(s1, startTime);
+
+    float tempo = 500000;
+    float microsPerTick = tempo/sequence->clocks;
+
+    //printSequence(sequence);
+
+    
+
+    for(;;) {
+
+        long currentTime = getMicrotime();
+
+        stepperAdvance(s0, currentTime, &microsPerTick, sequence->clocks);
+        stepperAdvance(s1, currentTime, &microsPerTick, sequence->clocks);
+
+        stepperEnable(s0);
+        stepperEnable(s1);
+
+        stepperPlay(s0, currentTime);
+        stepperPlay(s1, currentTime);
+    }
+
+
+
     free_sequence(sequence);
+
+
 
     free(bytes);
     return 0;
 }
+
 
 

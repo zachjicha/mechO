@@ -55,7 +55,12 @@ void append(List* list, Queue* data) {
 void free_node(Node* node) {
 
     free_queue(node->data);
-    free(node);
+
+    if(node != NULL) {
+        free(node);
+    }
+    
+    node = NULL;
 
 }
 
@@ -71,6 +76,10 @@ void free_list(List* list) {
         current = next;
     }
 
-    free(list);
+    if(list != NULL) {
+        free(list);
+    }
+
+    list = NULL;
 
 }
