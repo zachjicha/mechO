@@ -6,6 +6,7 @@
 
 typedef struct {
 
+    int done;
     int enPin;
     int stepPin;
     long eventStartTime;
@@ -19,6 +20,7 @@ typedef struct {
 Stepper* make_stepper(int enPin, int stepPin, Queue* track);
 void free_stepper(Stepper* stepper);
 
+int stepperDone(Stepper* stepper);
 void stepperInitTimes(Stepper* stepper, long currtime);
 void stepperAdvance(Stepper* stepper, long currtime, float *microsPerTick, float clocks);
 void stepperEnable(Stepper* stepper);

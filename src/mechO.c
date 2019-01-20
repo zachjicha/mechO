@@ -65,9 +65,11 @@ int main(int argc, char* argv[]) {
 
     //printSequence(sequence);
 
-    
+    int end = 2;
 
-    for(;;) {
+    while(end != 0) {
+
+        end = 2 - stepperDone(s0) - stepperDone(s1);
 
         long currentTime = getMicrotime();
 
@@ -80,8 +82,6 @@ int main(int argc, char* argv[]) {
         stepperPlay(s0, currentTime);
         stepperPlay(s1, currentTime);
     }
-
-
 
     free_sequence(sequence);
 

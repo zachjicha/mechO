@@ -6,6 +6,7 @@
 Stepper* make_stepper(int enPin, int stepPin, Queue* track) {
 
     Stepper* stepper = calloc(1, sizeof(Stepper));
+    stepper->done = 0;
     stepper->enPin = enPin;
     stepper->stepPin = stepPin;
     pinMode(enPin, OUTPUT);
@@ -34,6 +35,10 @@ void free_stepper(Stepper* stepper) {
     
 }
 
+int stepperDone(Stepper* stepper) {
+    return stepper->done;
+}
+
 void stepperInitTimes(Stepper* stepper, long currtime) {
     stepper->eventStartTime = currtime;
     stepper->pulseEndTime = currtime;
@@ -44,6 +49,7 @@ void stepperAdvance(Stepper* stepper, long currtime, float *microsPerTick, float
 
     if(type == 3) {
         digitalWrite(stepper->enPin, HIGH);
+        stepper->done = 1;
     }
     else if(currtime - stepper->eventStartTime >= (stepper->nextEvent->time * (*microsPerTick))) {
         if(type == 2) {
