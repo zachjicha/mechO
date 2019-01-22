@@ -57,7 +57,7 @@ void stepperAdvance(Stepper* stepper, long currtime, float *microsPerTick, float
             *microsPerTick = (stepper->currentEvent->data)/clocks;
         }
 
-        if(stepper->currentEvent->data < 2800 || stepper->currentEvent->data > 5000) {
+        if(stepper->currentEvent->data < 2800 || stepper->currentEvent->data > 4200) {
             digitalWrite(stepper->modePin, HIGH);
         }
         else {
