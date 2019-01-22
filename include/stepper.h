@@ -9,6 +9,7 @@ typedef struct {
     int done;
     int enPin;
     int stepPin;
+    int modePin;
     long eventStartTime;
     long pulseEndTime;
     Event* currentEvent;
@@ -17,7 +18,7 @@ typedef struct {
 
 } Stepper;
 
-Stepper* make_stepper(int enPin, int stepPin, Queue* track);
+Stepper* make_stepper(int enPin, int stepPin, int modePin, Queue* track);
 void free_stepper(Stepper* stepper);
 
 int stepperDone(Stepper* stepper);

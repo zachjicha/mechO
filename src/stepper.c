@@ -3,12 +3,13 @@
 #include "wiringPi.h"
 #include <stdlib.h>
 
-Stepper* make_stepper(int enPin, int stepPin, Queue* track) {
+Stepper* make_stepper(int enPin, int stepPin, int modePin, Queue* track) {
 
     Stepper* stepper = calloc(1, sizeof(Stepper));
     stepper->done = 0;
     stepper->enPin = enPin;
     stepper->stepPin = stepPin;
+    stepper->modePin = modePin;
     pinMode(enPin, OUTPUT);
     pinMode(stepPin, OUTPUT);
     digitalWrite(enPin, HIGH);
@@ -54,6 +55,13 @@ void stepperAdvance(Stepper* stepper, long currtime, float *microsPerTick, float
     else if(currtime - stepper->eventStartTime >= (stepper->nextEvent->time * (*microsPerTick))) {
         if(type == 2) {
             *microsPerTick = (stepper->currentEvent->data)/clocks;
+        }
+
+        if(stepper->currentEvent->data < 2800 || stepper->currentEvent->data > 5000) {
+            digitalWrite(stepper->modePin, HIGH);
+        }
+        else {
+            digitalWrite(stepper->modePin, HIGH);
         }
 
         free_event(stepper->currentEvent);
