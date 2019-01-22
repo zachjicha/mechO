@@ -94,12 +94,12 @@ int main(int argc, char* argv[]) {
     }
 
     free_sequence(sequence);
-
+/*
     free_stepper(s0);
     free_stepper(s1);
     free_stepper(s2);
     free_stepper(s3);
-
+*/
     free(bytes);
     return 0;
 }
