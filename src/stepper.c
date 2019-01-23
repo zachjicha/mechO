@@ -26,7 +26,6 @@ void free_stepper(Stepper* stepper) {
 
     free_event(stepper->currentEvent);
     free_event(stepper->nextEvent);
-    free_queue(stepper->track);
 
     if(stepper != NULL) {
         free(stepper);
@@ -61,14 +60,17 @@ void stepperAdvance(Stepper* stepper, long currtime, float *microsPerTick, float
             digitalWrite(stepper->modePin, HIGH);
         }
         else {
-            digitalWrite(stepper->modePin, HIGH);
+            digitalWrite(stepper->modePin, LOW);
         }
+
 
         free_event(stepper->currentEvent);
         stepper->eventStartTime += (stepper->nextEvent->time * (*microsPerTick));
         stepper->currentEvent = stepper->nextEvent;
         stepper->nextEvent = dequeue(stepper->track);
+        stepperEnable(stepper);
     }
+    
 }
 
 void stepperEnable(Stepper* stepper) {

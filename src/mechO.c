@@ -6,7 +6,15 @@
 #include "parser.h"
 #include "wiringPi.h"
 #include "stepper.h"
-#include <sys/time.h>
+#include <time.h>
+/*
+//Curtesy of https://gist.github.com/sevko/d23646ba07c77c15fde9
+long getMicrotime(){
+	struct timespec currentTime;
+	clock_gettime(CLOCK_MONOTONIC, &currentTime);
+	return (currentTime.tv_sec * (int)1e6 + (currentTime.tv_nsec/(int)1e3));
+}
+*/
 
 //Curtesy of https://gist.github.com/sevko/d23646ba07c77c15fde9
 long getMicrotime(){
@@ -26,6 +34,8 @@ int main(int argc, char* argv[]) {
     }
 
     wiringPiSetup();
+    piHiPri(20);
+    
 
     FILE* file;
     unsigned char* bytes;
@@ -51,6 +61,7 @@ int main(int argc, char* argv[]) {
     Sequence* sequence = make_sequence();
 
     populateSequence(sequence, bytes);
+    //printSequence(sequence);
 
     Stepper* s0 = make_stepper(16, 15, 8, getTrack(sequence, 0));
     Stepper* s1 = make_stepper(4, 1, 9, getTrack(sequence, 1));
@@ -64,10 +75,11 @@ int main(int argc, char* argv[]) {
     stepperInitTimes(s2, startTime);
     stepperInitTimes(s3, startTime);
 
+    int clocks = sequence->clocks;
     float tempo = 500000;
-    float microsPerTick = tempo/sequence->clocks;
+    float microsPerTick = tempo/clocks;
 
-    //printSequence(sequence);
+    
 
     int end = 4;
 
@@ -77,29 +89,30 @@ int main(int argc, char* argv[]) {
 
         long currentTime = getMicrotime();
 
-        stepperAdvance(s0, currentTime, &microsPerTick, sequence->clocks);
-        stepperAdvance(s1, currentTime, &microsPerTick, sequence->clocks);
-        stepperAdvance(s2, currentTime, &microsPerTick, sequence->clocks);
-        stepperAdvance(s3, currentTime, &microsPerTick, sequence->clocks);
-
+        stepperAdvance(s0, currentTime, &microsPerTick, clocks);
+        stepperAdvance(s1, currentTime, &microsPerTick, clocks);
+        stepperAdvance(s2, currentTime, &microsPerTick, clocks);
+        stepperAdvance(s3, currentTime, &microsPerTick, clocks);
+        /*
         stepperEnable(s0);
         stepperEnable(s1);
         stepperEnable(s2);
         stepperEnable(s3);
-
+        */
         stepperPlay(s0, currentTime);
         stepperPlay(s1, currentTime);
         stepperPlay(s2, currentTime);
         stepperPlay(s3, currentTime);
+        
     }
 
     free_sequence(sequence);
-/*
+
     free_stepper(s0);
     free_stepper(s1);
     free_stepper(s2);
     free_stepper(s3);
-*/
+
     free(bytes);
     return 0;
 }

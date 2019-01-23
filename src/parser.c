@@ -242,16 +242,15 @@ void populateSequence(Sequence* sequence, unsigned char* bytes) {
                         int pitchIndex = bytes[eventStartIndex + 1 - isRunningStatus];
 
                         int velocity = bytes[eventStartIndex + 2 - isRunningStatus];
-                            if(velocity == 0) {
-                                //Velocity of zero is really a note off event to sustain running status
-                                eventData = 0;
-                                eventType = 0;
-                            }
-                            else {
-                                //TODO PUT SPACE BETWEEN NOTES HERE
-                                eventData = getPitchVal(pitchIndex);
-                                eventType = 1;
-                            }
+                        if(velocity == 0) {
+                            //Velocity of zero is really a note off event to sustain running status
+                            eventData = 0;
+                            eventType = 0;
+                        }
+                        else {
+                            eventData = getPitchVal(pitchIndex);
+                            eventType = 1;
+                        }
                         //Record the length of the dt/event pair
                         nextPairStartIndex = 3 + eventStartIndex - isRunningStatus;
                         isRunningStatus = 1;
@@ -300,8 +299,9 @@ void populateSequence(Sequence* sequence, unsigned char* bytes) {
             }
             pairStartIndex = nextPairStartIndex;
         }
-        printQueue(currentTrack);
-        printf("\n");
+        //Debugging prints
+        //printQueue(currentTrack);
+        //printf("\n");
         trackStartIndex = nextPairStartIndex;
     }
 }
