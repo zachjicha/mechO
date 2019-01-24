@@ -12,7 +12,7 @@
 
 int main(int argc, char* argv[]) {
 
-    if(argc != 2) {
+    if(argc < 2) {
         printf("PLEASE INPUT FILENAME\n");
         return 1;
     }
@@ -51,6 +51,19 @@ int main(int argc, char* argv[]) {
     Stepper* s1 = make_stepper(4, 1, 9, getTrack(sequence, 1));
     Stepper* s2 = make_stepper(6, 5, 7, getTrack(sequence, 2));
     Stepper* s3 = make_stepper(11, 10, 0, getTrack(sequence, 3));
+
+    stepperIdle(s0);
+    stepperIdle(s1);
+    stepperIdle(s2);
+    stepperIdle(s3);
+
+    int idleTime = 5000;
+
+    if(argc == 3) {
+        idleTime = argv[2];
+    }
+
+    delay(idleTime);
 
     int startTime = micros();
 

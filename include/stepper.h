@@ -26,6 +26,7 @@ void stepperInitTimes(Stepper* stepper);
 void stepperAdvance(Stepper* stepper, float *microsPerTick, float clocks);
 void stepperEnable(Stepper* stepper);
 void stepperPlay(Stepper* stepper);
+void stepperIdle(Stepper* stepper);
 
 
 #endif

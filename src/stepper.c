@@ -89,3 +89,7 @@ void stepperPlay(Stepper* stepper) {
         digitalWrite(stepper->stepPin, LOW);
     }
 }
+
+void stepperIdle(Stepper* stepper) {
+    digitalWrite(stepper->enPin, HIGH);
+}
