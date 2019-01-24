@@ -6,22 +6,6 @@
 #include "parser.h"
 #include "wiringPi.h"
 #include "stepper.h"
-#include <time.h>
-/*
-//Curtesy of https://gist.github.com/sevko/d23646ba07c77c15fde9
-long getMicrotime(){
-	struct timespec currentTime;
-	clock_gettime(CLOCK_MONOTONIC, &currentTime);
-	return (currentTime.tv_sec * (int)1e6 + (currentTime.tv_nsec/(int)1e3));
-}
-*/
-
-//Curtesy of https://gist.github.com/sevko/d23646ba07c77c15fde9
-long getMicrotime(){
-	struct timeval currentTime;
-	gettimeofday(&currentTime, NULL);
-	return currentTime.tv_sec * (int)1e6 + currentTime.tv_usec;
-}
 
 //https://stackoverflow.com/questions/22059189/read-a-file-as-byte-array
 //Thanks SO for how to read file into a byte array
@@ -34,7 +18,7 @@ int main(int argc, char* argv[]) {
     }
 
     wiringPiSetup();
-    piHiPri(20);
+    piHiPri(99);
     
 
     FILE* file;
@@ -68,18 +52,16 @@ int main(int argc, char* argv[]) {
     Stepper* s2 = make_stepper(6, 5, 7, getTrack(sequence, 2));
     Stepper* s3 = make_stepper(11, 10, 0, getTrack(sequence, 3));
 
-    long startTime = getMicrotime();
+    int startTime = micros();
 
-    stepperInitTimes(s0, startTime);
-    stepperInitTimes(s1, startTime);
-    stepperInitTimes(s2, startTime);
-    stepperInitTimes(s3, startTime);
+    stepperInitTimes(s0);
+    stepperInitTimes(s1);
+    stepperInitTimes(s2);
+    stepperInitTimes(s3);
 
     int clocks = sequence->clocks;
     float tempo = 500000;
     float microsPerTick = tempo/clocks;
-
-    
 
     int end = 4;
 
@@ -87,22 +69,15 @@ int main(int argc, char* argv[]) {
 
         end = 4 - stepperDone(s0) - stepperDone(s1) - stepperDone(s2) - stepperDone(s3);
 
-        long currentTime = getMicrotime();
-
-        stepperAdvance(s0, currentTime, &microsPerTick, clocks);
-        stepperAdvance(s1, currentTime, &microsPerTick, clocks);
-        stepperAdvance(s2, currentTime, &microsPerTick, clocks);
-        stepperAdvance(s3, currentTime, &microsPerTick, clocks);
-        /*
-        stepperEnable(s0);
-        stepperEnable(s1);
-        stepperEnable(s2);
-        stepperEnable(s3);
-        */
-        stepperPlay(s0, currentTime);
-        stepperPlay(s1, currentTime);
-        stepperPlay(s2, currentTime);
-        stepperPlay(s3, currentTime);
+        stepperAdvance(s0, &microsPerTick, clocks);
+        stepperAdvance(s1, &microsPerTick, clocks);
+        stepperAdvance(s2, &microsPerTick, clocks);
+        stepperAdvance(s3, &microsPerTick, clocks);
+        
+        stepperPlay(s0);
+        stepperPlay(s1);
+        stepperPlay(s2);
+        stepperPlay(s3);
         
     }
 

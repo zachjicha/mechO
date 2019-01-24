@@ -1,1 +1,1 @@
-/usr/bin/cc    CMakeFiles/mechO.dir/src/mechO.c.o CMakeFiles/mechO.dir/src/queue.c.o  -o mechO 
+/usr/bin/cc     CMakeFiles/mechO.dir/src/list.c.o CMakeFiles/mechO.dir/src/mechO.c.o CMakeFiles/mechO.dir/src/parser.c.o CMakeFiles/mechO.dir/src/pitchvals.c.o CMakeFiles/mechO.dir/src/queue.c.o CMakeFiles/mechO.dir/src/sequence.c.o CMakeFiles/mechO.dir/src/stepper.c.o  -o mechO -Wl,-rpath,/usr/local/lib -rdynamic /usr/local/lib/libwiringPi.so 

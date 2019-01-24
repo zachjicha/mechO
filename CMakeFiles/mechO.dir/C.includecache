@@ -1,4 +1,4 @@
-#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
 
 #IncludeRegexScan: ^.*$
 
@@ -6,21 +6,101 @@
 
 #IncludeRegexTransform: 
 
-/home/zjicha/Projects/mechO/src/mechO.c
+/home/pi/mechO/src/list.c
+stdlib.h
+-
+stdio.h
+-
+list.h
+/home/pi/mechO/src/list.h
+queue.h
+/home/pi/mechO/src/queue.h
+
+/home/pi/mechO/src/mechO.c
 stdlib.h
 -
 stdio.h
 -
 queue.h
-/home/zjicha/Projects/mechO/src/queue.h
+/home/pi/mechO/src/queue.h
+list.h
+/home/pi/mechO/src/list.h
+sequence.h
+/home/pi/mechO/src/sequence.h
+parser.h
+/home/pi/mechO/src/parser.h
+wiringPi.h
+/home/pi/mechO/src/wiringPi.h
+stepper.h
+/home/pi/mechO/src/stepper.h
 
-/home/zjicha/Projects/mechO/src/queue.c
+/home/pi/mechO/src/parser.c
+parser.h
+/home/pi/mechO/src/parser.h
+queue.h
+/home/pi/mechO/src/queue.h
+list.h
+/home/pi/mechO/src/list.h
+pitchvals.h
+/home/pi/mechO/src/pitchvals.h
+sequence.h
+/home/pi/mechO/src/sequence.h
+stdlib.h
+-
+stdio.h
+-
+
+/home/pi/mechO/src/pitchvals.c
+
+/home/pi/mechO/src/queue.c
 stdlib.h
 -
 stdio.h
 -
 queue.h
-/home/zjicha/Projects/mechO/src/queue.h
+/home/pi/mechO/src/queue.h
 
+/home/pi/mechO/src/sequence.c
+stdlib.h
+-
+stdio.h
+-
+list.h
+/home/pi/mechO/src/list.h
+queue.h
+/home/pi/mechO/src/queue.h
+sequence.h
+/home/pi/mechO/src/sequence.h
+
+/home/pi/mechO/src/stepper.c
+stepper.h
+/home/pi/mechO/src/stepper.h
+queue.h
+/home/pi/mechO/src/queue.h
+wiringPi.h
+/home/pi/mechO/src/wiringPi.h
+stdlib.h
+-
+
+include/list.h
+queue.h
+include/queue.h
+
+include/parser.h
+sequence.h
+include/sequence.h
+
+include/pitchvals.h
+
+include/queue.h
+
+include/sequence.h
+list.h
+include/list.h
+queue.h
+include/queue.h
+
+include/stepper.h
+queue.h
 include/queue.h
 

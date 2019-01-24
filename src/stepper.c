@@ -39,19 +39,19 @@ int stepperDone(Stepper* stepper) {
     return stepper->done;
 }
 
-void stepperInitTimes(Stepper* stepper, long currtime) {
-    stepper->eventStartTime = currtime;
-    stepper->pulseEndTime = currtime;
+void stepperInitTimes(Stepper* stepper) {
+    stepper->eventStartTime = micros();
+    stepper->pulseEndTime = micros();
 }
 
-void stepperAdvance(Stepper* stepper, long currtime, float *microsPerTick, float clocks) {
+void stepperAdvance(Stepper* stepper, float *microsPerTick, float clocks) {
     int type = stepper->currentEvent->type;
 
     if(type == 3) {
         digitalWrite(stepper->enPin, HIGH);
         stepper->done = 1;
     }
-    else if(currtime - stepper->eventStartTime >= (stepper->nextEvent->time * (*microsPerTick))) {
+    else if(micros() - stepper->eventStartTime >= (stepper->nextEvent->time * (*microsPerTick))) {
         if(type == 2) {
             *microsPerTick = (stepper->currentEvent->data)/clocks;
         }
@@ -82,8 +82,8 @@ void stepperEnable(Stepper* stepper) {
     }
 }
 
-void stepperPlay(Stepper* stepper, long currtime) {
-    if(currtime - stepper->pulseEndTime >= stepper->currentEvent->data) {
+void stepperPlay(Stepper* stepper) {
+    if(micros() - stepper->pulseEndTime >= stepper->currentEvent->data) {
         stepper->pulseEndTime += stepper->currentEvent->data;
         digitalWrite(stepper->stepPin, HIGH);
         digitalWrite(stepper->stepPin, LOW);

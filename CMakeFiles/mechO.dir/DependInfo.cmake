@@ -4,8 +4,13 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
-  "/home/zjicha/Projects/mechO/src/mechO.c" "/home/zjicha/Projects/mechO/CMakeFiles/mechO.dir/src/mechO.c.o"
-  "/home/zjicha/Projects/mechO/src/queue.c" "/home/zjicha/Projects/mechO/CMakeFiles/mechO.dir/src/queue.c.o"
+  "/home/pi/mechO/src/list.c" "/home/pi/mechO/CMakeFiles/mechO.dir/src/list.c.o"
+  "/home/pi/mechO/src/mechO.c" "/home/pi/mechO/CMakeFiles/mechO.dir/src/mechO.c.o"
+  "/home/pi/mechO/src/parser.c" "/home/pi/mechO/CMakeFiles/mechO.dir/src/parser.c.o"
+  "/home/pi/mechO/src/pitchvals.c" "/home/pi/mechO/CMakeFiles/mechO.dir/src/pitchvals.c.o"
+  "/home/pi/mechO/src/queue.c" "/home/pi/mechO/CMakeFiles/mechO.dir/src/queue.c.o"
+  "/home/pi/mechO/src/sequence.c" "/home/pi/mechO/CMakeFiles/mechO.dir/src/sequence.c.o"
+  "/home/pi/mechO/src/stepper.c" "/home/pi/mechO/CMakeFiles/mechO.dir/src/stepper.c.o"
   )
 set(CMAKE_C_COMPILER_ID "GNU")
 
