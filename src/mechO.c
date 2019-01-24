@@ -60,7 +60,7 @@ int main(int argc, char* argv[]) {
     int idleTime = 5000;
 
     if(argc == 3) {
-        idleTime = argv[2];
+        idleTime = atoi(argv[2]);
     }
 
     delay(idleTime);
