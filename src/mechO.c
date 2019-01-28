@@ -57,7 +57,7 @@ int main(int argc, char* argv[]) {
     stepperIdle(s2);
     stepperIdle(s3);
 
-    int idleTime = 5000;
+    int idleTime = 0;
 
     if(argc == 3) {
         idleTime = atoi(argv[2]);
