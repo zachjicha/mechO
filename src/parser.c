@@ -295,7 +295,7 @@ void populateSequence(Sequence* sequence, unsigned char* bytes) {
             //So we can add it to our track
             enqueue(currentTrack, eventType, eventTime, eventData);
             if(eventType == 2) {
-                enqueue(currentTrack, 0, 0, 0);
+            //    enqueue(currentTrack, 0, 0, 0);
             }
             pairStartIndex = nextPairStartIndex;
         }
