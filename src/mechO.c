@@ -50,7 +50,7 @@ int main(int argc, char* argv[]) {
     Stepper* s0 = make_stepper(16, 15, 8, getTrack(sequence, 0));
     Stepper* s1 = make_stepper(4, 1, 9, getTrack(sequence, 1));
     Stepper* s2 = make_stepper(6, 5, 7, getTrack(sequence, 2));
-    Stepper* s3 = make_stepper(11, 10, 0, getTrack(sequence, 3));
+    Stepper* s3 = make_stepper(11, 10, 2, getTrack(sequence, 3));
 
     stepperIdle(s0);
     stepperIdle(s1);
