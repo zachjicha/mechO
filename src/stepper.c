@@ -52,9 +52,6 @@ void stepperAdvance(Stepper* stepper, float *microsPerTick, float clocks) {
         stepper->done = 1;
     }
     else if(micros() - stepper->eventStartTime >= (stepper->nextEvent->time * (*microsPerTick))) {
-        if(type == 2) {
-            *microsPerTick = (stepper->currentEvent->data)/clocks;
-        }
 
         if(stepper->currentEvent->data < 2800 || stepper->currentEvent->data > 4200) {
             digitalWrite(stepper->modePin, HIGH);
@@ -63,11 +60,13 @@ void stepperAdvance(Stepper* stepper, float *microsPerTick, float clocks) {
             digitalWrite(stepper->modePin, LOW);
         }
 
-
         free_event(stepper->currentEvent);
         stepper->eventStartTime += (stepper->nextEvent->time * (*microsPerTick));
         stepper->currentEvent = stepper->nextEvent;
         stepper->nextEvent = dequeue(stepper->track);
+        if(stepper->currentEvent->type == 2) {
+            *microsPerTick = (stepper->currentEvent->data)/clocks;
+        }
         stepperEnable(stepper);
     }
     
