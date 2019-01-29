@@ -56,6 +56,9 @@ void stepperAdvance(Stepper* stepper, float *microsPerTick, float clocks) {
     }
     //If length of event has passed
     else if(micros() - stepper->eventStartTime >= (stepper->nextEvent->time * (*microsPerTick))) {
+        if(type == 2) {
+            *microsPerTick = (stepper->currentEvent->data)/clocks;
+        }
 
         //Set motor to half step mode if note is especially high or low
         //Helps to combat weird noises and ugly sounds
