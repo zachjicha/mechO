@@ -14,7 +14,7 @@ include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(wiringPi DEFAULT_MSG WIRINGPI_LIBRARIES WIRINGPI_INCLUDE_DIRS)
 ```  
 4. Move FindWiringPi.cmake to the directory /usr/share/cmake-y.x/Modules where y.x is your cmake version  
-5. Download or clone the repo onto your pi  
+5. Download or clone mechO onto your pi  
 6. CD into the mechO directory  
 7. Change any pin configs you need to using the wwiringpi pins on the diagram on [this page](http://wiringpi.com/pins/)  
 8. Enter the follwoing commands:  
