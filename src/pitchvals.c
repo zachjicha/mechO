@@ -1,3 +1,4 @@
+//Period of notes
 int pitchVals[] = {
     0, //0, C-1
     0, //1, C#-1

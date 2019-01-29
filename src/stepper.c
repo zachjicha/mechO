@@ -44,15 +44,21 @@ void stepperInitTimes(Stepper* stepper) {
     stepper->pulseEndTime = micros();
 }
 
+//Handles advancing to next event
 void stepperAdvance(Stepper* stepper, float *microsPerTick, float clocks) {
     int type = stepper->currentEvent->type;
 
+    //Check type of current event
     if(type == 3) {
+        //EOT, disable motor
         digitalWrite(stepper->enPin, HIGH);
         stepper->done = 1;
     }
+    //If length of event has passed
     else if(micros() - stepper->eventStartTime >= (stepper->nextEvent->time * (*microsPerTick))) {
 
+        //Set motor to half step mode if note is especially high or low
+        //Helps to combat weird noises and ugly sounds
         if(stepper->currentEvent->data < 2800 || stepper->currentEvent->data > 4200) {
             digitalWrite(stepper->modePin, HIGH);
         }
@@ -60,10 +66,12 @@ void stepperAdvance(Stepper* stepper, float *microsPerTick, float clocks) {
             digitalWrite(stepper->modePin, LOW);
         }
 
+        //Advance the current event
         free_event(stepper->currentEvent);
         stepper->eventStartTime += (stepper->nextEvent->time * (*microsPerTick));
         stepper->currentEvent = stepper->nextEvent;
         stepper->nextEvent = dequeue(stepper->track);
+        //If tempo event, update tempo
         if(stepper->currentEvent->type == 2) {
             *microsPerTick = (stepper->currentEvent->data)/clocks;
         }
@@ -72,6 +80,7 @@ void stepperAdvance(Stepper* stepper, float *microsPerTick, float clocks) {
     
 }
 
+//If current events type is 1, enable motor
 void stepperEnable(Stepper* stepper) {
     if(stepper->currentEvent->type == 1) {
         digitalWrite(stepper->enPin, LOW);
@@ -81,6 +90,7 @@ void stepperEnable(Stepper* stepper) {
     }
 }
 
+//If the period of the note has passed, pulse the motor
 void stepperPlay(Stepper* stepper) {
     if(micros() - stepper->pulseEndTime >= stepper->currentEvent->data) {
         stepper->pulseEndTime += stepper->currentEvent->data;

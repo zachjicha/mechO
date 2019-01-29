@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include "queue.h"
 
+//THis is just a queue with a custom node
+
 Event* make_event(int type, int dtime, long data, Event* next) {
 
     Event* event = calloc(1, sizeof(Event));

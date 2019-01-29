@@ -47,11 +47,13 @@ int main(int argc, char* argv[]) {
     populateSequence(sequence, bytes);
     //printSequence(sequence);
 
+    //Create steppers and give them their tracks
     Stepper* s0 = make_stepper(16, 15, 8, getTrack(sequence, 0));
     Stepper* s1 = make_stepper(4, 1, 9, getTrack(sequence, 1));
     Stepper* s2 = make_stepper(6, 5, 7, getTrack(sequence, 2));
     Stepper* s3 = make_stepper(11, 10, 2, getTrack(sequence, 3));
 
+    //Disable the steppers
     stepperIdle(s0);
     stepperIdle(s1);
     stepperIdle(s2);
@@ -59,12 +61,14 @@ int main(int argc, char* argv[]) {
 
     int idleTime = 0;
 
+    //Idle for inputted time
     if(argc == 3) {
         idleTime = atoi(argv[2]);
     }
 
     delay(idleTime);
 
+    //Init start times of steppers
     int startTime = micros();
 
     stepperInitTimes(s0);
@@ -72,6 +76,7 @@ int main(int argc, char* argv[]) {
     stepperInitTimes(s2);
     stepperInitTimes(s3);
 
+    //Variables for timing
     int clocks = sequence->clocks;
     float tempo = 500000;
     float microsPerTick = tempo/clocks;

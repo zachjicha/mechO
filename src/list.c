@@ -3,6 +3,8 @@
 #include "list.h"
 #include "queue.h"
 
+//THis is just a linked list
+
 List* make_list() {
 
     List* list = calloc(1, sizeof(List));
