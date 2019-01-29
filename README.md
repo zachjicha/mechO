@@ -25,5 +25,5 @@ make
 mechO will now be compiled and ready for use  
 
 **Usage:**  
-`./mechO <filename>.mid` will run <filename>.mid on the motors given you have the same amount of motors as tracks  
+`./mechO <filename>.mid` will run \<filename\>.mid on the motors given you have the same amount of motors as tracks  
 `./mechO <filename>.mid <time>` is the same as above, but will wait \<time\> milliseconds before running
