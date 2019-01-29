@@ -2,7 +2,7 @@
 
 One of the successors to Stepper-Music. This version is made in C and is designed to run on Raspberry Pi Zero, but should work on any Pi. The other successor (coming soon) is preferred to this one, but requires arduino. This works with only pi, but can occasionaly stutter, possibly due to the OS running on the pi.
 
-**Installation:**\n
+**Installation:**<br>
 Make sure cmake and make are installed on your pi
 Install [wiringPi] on your pi{http://wiringpi.com/download-and-install/}
 As per [this Stack Overflow thread]{https://stackoverflow.com/questions/30424236/add-wiringpi-lib-to-cmake-on-raspberrypi}, create a file FindWiringPi.cmake with the following text:
@@ -24,6 +24,6 @@ make
 ```
 mechO will now be compiled and ready for use
 
-**Usage:**\n
+**Usage:**<br>
 `./mechO <filename>.mid` will run <filename>.mid on the motors given you have the same amount of motors as tracks
 `./mechO <filename>.mid <time>` is the same as above, but will wait <time> milliseconds before running
