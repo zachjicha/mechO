@@ -4,7 +4,7 @@ One of the successors to Stepper-Music. This version is made in C and is designe
 
 **Installation:**  
 Make sure cmake and make are installed on your pi  
-Install [wiringPi] on your pi{http://wiringpi.com/download-and-install/}  
+Install [wiringPi]{http://wiringpi.com/download-and-install/} on your pi 
 As per [this Stack Overflow thread]{https://stackoverflow.com/questions/30424236/add-wiringpi-lib-to-cmake-on-raspberrypi}, create a file FindWiringPi.cmake with the following text:  
 ```
 find_library(WIRINGPI_LIBRARIES NAMES wiringPi)
