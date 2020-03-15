@@ -1,6 +1,6 @@
 # mechanical Orchestra
 
-One of the successors to Stepper-Music. This version is made in C and is designed to run on Raspberry Pi Zero, but should work on any Pi. The other successor, [midiPARSEC](https://github.com/zachjicha13/midiPARSEC), is preferred to this one, but requires arduino. This works with only a raspberry pi, but can occasionaly stutter, possibly due to the OS running on the pi.
+One of the successors to Stepper-Music. This version is made in C and is designed to run on Raspberry Pi Zero, but should work on any Pi. The other successor, [midiPARSEC](https://github.com/zachjicha13/midiPARSEC), is preferred to this one, but requires arduino. This works with only a raspberry pi, but can occasionaly stutter, most likely due to the OS running on the pi.
 
 **Installation:**  
 1. Make sure cmake and make are installed on your pi  
